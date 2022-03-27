@@ -1,5 +1,5 @@
 class PrototypesController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticate_user!, except: [:index, :show]
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :move_to_index, except: [:index, :show, :new, :create,:edit,:update,:destroy]
 
@@ -46,11 +46,6 @@ class PrototypesController < ApplicationController
     redirect_to root_path
   end
 
-    def move_to_index
-    unless user_signed_in?
-      redirect_to action: :index
-    end
-  end
 
   private
 
@@ -60,6 +55,10 @@ class PrototypesController < ApplicationController
 
    def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: [:name])
+  end
+
+  def contributor_confirmation
+    redirect_to root_path unless current_user == @prototype.user
   end
 
 end
